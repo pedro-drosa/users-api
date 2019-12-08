@@ -1,0 +1,25 @@
+{
+    "name": "pedro-drosa/users-api",
+    "description": "[API] PHP + Slim + Mysql + Illuminate",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pedro-drosa",
+            "email": "pedro_drosa@hotmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\":"app/"
+        },
+        "files": [
+            "app/Config.php"
+        ]
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "slim/slim": "3.*",
+        "illuminate/database": "^6.6"
+    }
+}
