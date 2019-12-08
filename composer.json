@@ -14,7 +14,7 @@
             "App\\":"app/"
         },
         "files": [
-            "app/Config.php"
+            "app/config.php"
         ]
     },
     "minimum-stability": "stable",
