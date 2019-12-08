@@ -1,12 +1,9 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+
+use App\Controllers\User as Controller;
 use Slim\App;
 
 return function (App $app)
 {
-    $app->get('/users', function (Request $request, Response $response) {
-        $response->getBody()->write('Hello world!');
-        return $response;
-    });
+    $app->get('/users',Controller::class.":index");
 };
