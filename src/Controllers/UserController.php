@@ -7,14 +7,22 @@ use App\Models\User as User;
 
 class UserController
 {
-    public function index(Request $req, Response $res)
+    public function index(Request $req, Response $res, array $args)
     {
         foreach (User::all() as $user) {
             $data[] = $user;
         }
         return $res->withJson($data);
     }
-    public function show(){}
+    public function show(Request $req, Response $res, array $args)
+    {
+        $user = User::find($args['id']);
+        if ($user) {
+            return $res->withJson($user);
+        }else{
+            return $res->withJson(["message"=>"Nothing found"], 404);
+        }
+    }
     public function store(){}
     public function update(){}
     public function destroy(){}
