@@ -1,9 +1,9 @@
 <?php
 
-use App\Controllers\User as Controller;
+use App\Controllers\UserController;
 use Slim\App;
 
 return function (App $app)
 {
-    $app->get('/users',Controller::class.":index");
+    $app->get('/users',UserController::class.":index");
 };

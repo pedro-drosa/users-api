@@ -12,10 +12,7 @@
     "autoload": {
         "psr-4": {
             "App\\":"src/"
-        },
-        "files": [
-            "app/config.php"
-        ]
+        }
     },
     "minimum-stability": "stable",
     "require": {
