@@ -45,6 +45,19 @@ class UserController
         }
         return $res->withJson(["error"=>"Registration Failed"], 400);
     }
-    public function update(){}
+    public function update(Request $req, Response $res, array $args)
+    {
+        $body = $req->getParsedBody();
+        if (empty($body['user_name'])) {
+            return $res->withJson(["error"=>"name"], 400);
+        }
+        if (empty($body['user_email'])) {
+            return $res->withJson(["error"=>"email"], 400);
+        }
+        if (empty($body['user_password'])) {
+            return $res->withJson(["error"=>"password"], 400);
+        }
+        User::where('id', $args['id'])->update($body);
+    }
     public function destroy(){}
 }
