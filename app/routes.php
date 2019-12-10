@@ -9,4 +9,5 @@ return function (App $app)
     $app->get('/users/{id}', UserController::class.":show");
     $app->post('/users', UserController::class.":store");
     $app->put('/users/{id}', UserController::class.":update");
+    $app->delete('/users/{id}', UserController::class.":destroy");
 };

@@ -59,5 +59,8 @@ class UserController
         }
         User::where('id', $args['id'])->update($body);
     }
-    public function destroy(){}
+    public function destroy(Request $req, Response $res, array $args)
+    {
+        User::destroy($args['id']);
+    }
 }
