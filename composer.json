@@ -17,6 +17,7 @@
     "minimum-stability": "stable",
     "require": {
         "slim/slim": "3.*",
-        "illuminate/database": "^6.6"
+        "illuminate/database": "^6.6",
+        "davidepastore/slim-validation": "^0.5.1"
     }
 }

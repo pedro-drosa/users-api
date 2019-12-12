@@ -27,23 +27,18 @@ class UserController
     public function store(Request $req, Response $res, array $args)
     {
         $body = $req->getParsedBody();
-        if (empty($body['user_name'])) {
-            return $res->withJson(["error"=>"name"], 400);
-        }
-        if (empty($body['user_email'])) {
-            return $res->withJson(["error"=>"email"], 400);
-        }
-        if (empty($body['user_password'])) {
-            return $res->withJson(["error"=>"password"], 400);
-        }
-        try {
-            $id = User::insertGetId($body);
-            $newUser = User::find($id);
-            return $res->withJson($newUser, 201);
-        } catch (QueryException $e) {
-            return $res->withJson(["error"=>"User alread exists"], 400);
-        }
-        return $res->withJson(["error"=>"Registration Failed"], 400);
+        if($req->getAttribute('has_errors')){
+            $err = $req->getAttribute('errors');
+            return $res->withJson($err, 400);
+          } else {
+            try {
+                $id = User::insertGetId($body);
+                $newUser = User::find($id);
+                return $res->withJson($newUser, 201);
+            } catch (QueryException $err) {
+                return $res->withJson(["error"=>"User alread exists"], 400);
+            }
+          }
     }
     public function update(Request $req, Response $res, array $args)
     {
