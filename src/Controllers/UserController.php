@@ -13,7 +13,10 @@ class UserController
         foreach (User::all() as $user) {
             $data[] = $user;
         }
-        return $res->withJson($data);
+        if(isset($data)){
+            return $res->withJson($data);
+        }
+        return $res->withJson(['message'=>"Nothing found"]);
     }
     public function show(Request $req, Response $res, array $args)
     {
@@ -21,7 +24,7 @@ class UserController
         if ($user) {
             return $res->withJson([$user]);
         }else{
-            return $res->withJson(["message"=>"Nothing found"], 404);
+            return $res->withJson(["message"=>"User not found"], 404);
         }
     }
     public function store(Request $req, Response $res, array $args)
@@ -38,21 +41,16 @@ class UserController
             } catch (QueryException $err) {
                 return $res->withJson(["error"=>"User alread exists"], 400);
             }
-          }
+        }
     }
     public function update(Request $req, Response $res, array $args)
     {
         $body = $req->getParsedBody();
-        if (empty($body['user_name'])) {
-            return $res->withJson(["error"=>"name"], 400);
+        $return = User::where('id', $args['id'])->update($body);
+        if($return > 0){
+            return $res->withJson(User::find($args['id']),201);
         }
-        if (empty($body['user_email'])) {
-            return $res->withJson(["error"=>"email"], 400);
-        }
-        if (empty($body['user_password'])) {
-            return $res->withJson(["error"=>"password"], 400);
-        }
-        User::where('id', $args['id'])->update($body);
+        return $res->withJson(["error"=>"No data changed"]);
     }
     public function destroy(Request $req, Response $res, array $args)
     {
