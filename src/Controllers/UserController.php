@@ -8,7 +8,7 @@ use App\Models\User as User;
 
 class UserController
 {
-    public function index(Request $req, Response $res, array $args)
+    public function index(Request $req, Response $res, array $args):Response
     {
         foreach (User::all() as $user) {
             $data[] = $user;
@@ -16,44 +16,46 @@ class UserController
         if(isset($data)){
             return $res->withJson($data);
         }
-        return $res->withJson(['message'=>"Nothing found"]);
+        return $res->withJson(['message'=>"Nothing found"], 400);
     }
-    public function show(Request $req, Response $res, array $args)
+    public function show(Request $req, Response $res, array $args):Response
     {
         $user = User::find($args['id']);
         if ($user) {
-            return $res->withJson([$user]);
-        }else{
-            return $res->withJson(["message"=>"User not found"], 404);
+            return $res->withJson($user);
         }
+        return $res->withJson(["message"=>"User not found"], 404);
     }
-    public function store(Request $req, Response $res, array $args)
+    public function store(Request $req, Response $res, array $args):Response
     {
-        $body = $req->getParsedBody();
         if($req->getAttribute('has_errors')){
             $err = $req->getAttribute('errors');
             return $res->withJson($err, 400);
           } else {
             try {
-                $id = User::insertGetId($body);
-                $newUser = User::find($id);
+                $newUser = User::find(User::insertGetId($req->getParsedBody()));
                 return $res->withJson($newUser, 201);
             } catch (QueryException $err) {
                 return $res->withJson(["error"=>"User alread exists"], 400);
             }
         }
     }
-    public function update(Request $req, Response $res, array $args)
-    {
-        $body = $req->getParsedBody();
-        $return = User::where('id', $args['id'])->update($body);
-        if($return > 0){
-            return $res->withJson(User::find($args['id']),201);
+    public function update(Request $req, Response $res, array $args):Response
+    {   
+        try {
+            if(User::where('id', $args['id'])->update($req->getParsedBody())){
+                return $res->withJson(User::find($args['id']), 200);
+            }
+            return $res->withJson(["error"=>"No data changed"], 400);
+        } catch (QueryException $err) {
+            return $res->withJson(["error"=>"User alread exists"], 400);
         }
-        return $res->withJson(["error"=>"No data changed"]);
     }
-    public function destroy(Request $req, Response $res, array $args)
+    public function destroy(Request $req, Response $res, array $args):Response
     {
-        User::destroy($args['id']);
+        if(User::destroy($args['id'])){
+            return $res->withJson(["message"=>"successfully removed"], 200);
+        }
+        return $res->withJson(["error"=>"No data changed"], 400);
     }
 }
