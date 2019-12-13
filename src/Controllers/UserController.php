@@ -29,11 +29,10 @@ class UserController
     public function store(Request $req, Response $res, array $args):Response
     {
         if($req->getAttribute('has_errors')){
-            $err = $req->getAttribute('errors');
-            return $res->withJson($err, 400);
-          } else {
+            return $res->withJson($req->getAttribute('errors'), 400);
+        } else {
             try {
-                $newUser = User::find(User::insertGetId($req->getParsedBody()));
+                $newUser = User::find(User::insertGetId($req->getAttribute('body')));
                 return $res->withJson($newUser, 201);
             } catch (QueryException $err) {
                 return $res->withJson(["error"=>"User alread exists"], 400);
@@ -42,13 +41,17 @@ class UserController
     }
     public function update(Request $req, Response $res, array $args):Response
     {   
-        try {
-            if(User::where('id', $args['id'])->update($req->getParsedBody())){
-                return $res->withJson(User::find($args['id']), 200);
+        if($req->getAttribute('has_errors')){
+            return $res->withJson($req->getAttribute('errors'), 400);
+        } else {
+            try {
+                if(User::where('id', $args['id'])->update($req->getAttribute('body'))){
+                    return $res->withJson(User::find($args['id']), 200);
+                }
+                return $res->withJson(["error"=>"No data changed"], 400);
+            } catch (QueryException $err) {
+                return $res->withJson(["error"=>"User alread exists"], 400);
             }
-            return $res->withJson(["error"=>"No data changed"], 400);
-        } catch (QueryException $err) {
-            return $res->withJson(["error"=>"User alread exists"], 400);
         }
     }
     public function destroy(Request $req, Response $res, array $args):Response
